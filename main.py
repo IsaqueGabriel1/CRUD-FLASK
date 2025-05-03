@@ -1,6 +1,8 @@
 from flask import Flask,render_template,request,redirect,url_for,flash
 from db.conexao import conectadb
-
+from werkzeug import security
+from util.u import ler_xlsx_e_gerar_tuples, retornaDadoParaInsert
+import os
 
 app = Flask(__name__)
 app.secret_key = "123123213555"
@@ -14,6 +16,46 @@ def home():
     dados = cur.execute(query).fetchall()
     return render_template("index.html",dados=dados)
 
+
+@app.route("/arquivos", methods=['POST'])
+def uparquivo():
+    arquivo = request.files['meuarquivo']
+    print(arquivo)
+    #nome_arquivo = arquivo.filename
+    nome_arquivo = arquivo.filename
+    extensao = os.path.splitext(nome_arquivo)[1]
+    #verifica extenção do arquivo
+    #print(extensao)
+    if extensao == ".xlsx":
+        local = rf"C:\Users\Eler\Desktop\projetoflask\diretorio"
+        arquivo.save(os.path.join(local,arquivo.filename))
+        
+        dados = ler_xlsx_e_gerar_tuples("{}\{}".format(local,arquivo.filename), "{}\{}".format(local,"teste.txt"))
+        query="""
+            INSERT INTO USERS (
+                        nome,
+                        idade
+                    )
+                    VALUES 
+                        {}
+        """.format(dados)
+        con = conectadb()
+        cur = con.cursor()
+        try:
+            cur.execute(query)
+            con.commit()
+            flash("Dados inseridos com sucesso!")
+        except:
+            flash("Não foi possivel importar os dados, verifique o arquivo!")
+    else:
+        flash("Não é possivel importar dados de arquivos diferentes de .xlsx")
+    
+    return redirect(url_for('home'))
+
+
+@app.route("/nav")
+def navbar():
+    return render_template("navbar.html")
 
 @app.route("/cadastro", methods=['GET', 'POST'])
 def cadastro():
@@ -74,7 +116,21 @@ def editar(id):
             #print("erro ao conectar com o banco")
            #s return redirect(url_for('home'))
            
-        
+
+@app.route("/deletar<string:id>")
+def deletar(id):
+    query = "delete from USERS where id = ?"
+    con =conectadb()
+    cur = con.cursor()
+    try:
+        cur.execute(query, (id,))
+        con.commit()
+        flash("true")
+        return redirect(url_for('home'))
+    except:
+        flash("false")
+        print("Erro")
+        return redirect(url_for('home'))
 
 
 app.run(debug=True)
