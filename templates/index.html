@@ -1,39 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-
 {% include 'head.html' %}
-
 <body>
+    {% include 'navbar.html' %}
     <div style="width: 100%; height: 100vh;">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <ul class=flashes>
             {% for message in messages %}
-            <li>{{ message }}</li>
+            <div id="mensagem">{{ message }}</div>
             {% endfor %}
-        </ul>
         {% endif %}
         {% endwith %}
+        <div style="display: flex; justify-content: center; padding: 50px; color: #12D0FF;">
+            <h1>Nome do portal</h1>
+        </div>
         <div style="width: 50%; margin-left: auto; margin-right: auto; margin-top: 50px;">
-            <a href="{{url_for('cadastro')}}"
-                style="width: 100px; padding: 10px;  background: #ffffff; border: solid 1px black; border-radius: 5px; color: #000000; text-decoration: none;">Novo
-                User</a>
-            <table id="myTable" style="margin-top: 10px;">
+            <a id="cadastrar" href="{{url_for('cadastro')}}">NovoUser</a>
+            <a id="importArq">Importar arquivo</a>
+            <table id="myTable" style="margin-top: 10px;" class="display compact hover row-border order-column">
                 <thead>
-                    <th>id</th>
-                    <th>Nome</th>
-                    <th>Idade</th>
-                    <th>Ações</th>
+                    <th>ID</th>
+                    <th>NOME</th>
+                    <th>IDADE</th>
+                    <th>AÇÕES</th>
                 </thead>
                 <tbody>
                     {% for d in dados %}
                     <tr>
-                        <td id="id">{{ d[0] }}</td>
+                        <td class="idr">{{ d[0] }}</td>
                         <td>{{ d[1] }}</td>
                         <td>{{ d[2] }}</td>
                         <td>
-                            <a id="btn" href="{{url_for('editar',id=d[0])}}">Editar</a>
-                            <a id="btn" href="#">Excluir</a>
+                            <a class="btnEditar" href="{{url_for('editar',id=d[0])}}">Editar</a>
+                            <a class="btnExcluir" href="{{url_for('deletar',id=d[0])}}" onclick="return confirm('realmente deseja deletar este usuario?')">Excluir</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -41,17 +40,11 @@
             </table>
         </div>
     </div>
-    <script type="text/javascript">
-
-        new DataTable('#myTable', {
-            layout: {
-                topStart: {
-                    buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5']
-                }
-            }
-        });
-
-    </script>
+    <div class="selector">
+        {% include 'uparquivo.html' %}
+    </div>
+    
+    <script src="/static/js/model.js"></script>
 </body>
 
 </html>

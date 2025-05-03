@@ -6,17 +6,25 @@
 <body>
     <div style="width: 100%;">
         <div style="margin: auto; width: 25%;">
-            <form method="post" action="{{ url_for('editar', id=dados[0]) }}" >
-                <fieldset>
-                    <legend>Novo User:</legend>
-                    {% if dados %}
-                        <input type="text" name="nome" id="nome" value="{{dados[1]}}">
-                        <input type="number" name="idade" id="idade" value="{{dados[2]}}">
-                        
-                    {% endif %}
-                    <input type="submit" id="btnEnviar" value="Enviar">
-                </fieldset>
-            </form>
+            {% if dados %}
+                <form method="post" action="{{ url_for('editar', id=dados[0]) }}" >
+                    <fieldset>
+                        <legend>Novo User:</legend>
+                            <input type="text" name="nome" id="nome" value="{{dados[1]}}">
+                            <input type="number" name="idade" id="idade" value="{{dados[2]}}">
+                        <input type="submit" id="btnEnviar" value="Enviar">
+                    </fieldset>
+                </form>
+            {% else %}
+                <form method="post" action="{{ url_for('cadastro') }}" >
+                    <fieldset>
+                        <legend>Novo User:</legend>
+                            <input type="text" name="nome" id="nome" placeholder="Digite o nome do usuario">
+                            <input type="number" name="idade" id="idade" placeholder="Digite a idade do usuario">
+                        <input type="submit" id="btnEnviar" value="Enviar">
+                    </fieldset>
+                </form>
+            {% endif %}
         </div>
     </div>
     <script>
