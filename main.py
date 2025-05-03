@@ -29,7 +29,7 @@ def uparquivo():
     if extensao == ".xlsx":
         local = rf"C:\Users\Eler\Desktop\projetoflask\diretorio"
         arquivo.save(os.path.join(local,arquivo.filename))
-        
+        #converte arquivo xlsx em tuplas sql para inserção em massa no banco de dados
         dados = ler_xlsx_e_gerar_tuples("{}\{}".format(local,arquivo.filename), "{}\{}".format(local,"teste.txt"))
         query="""
             INSERT INTO USERS (
@@ -65,10 +65,12 @@ def cadastro():
         try:
             con = conectadb()
             cur = con.cursor()
-            
+            #adicionar os campos do forms aqui.
             nome = request.form['nome']
             idade = request.form['idade']
+            
             dados = (nome, idade)
+            
             sql = """
             INSERT INTO USERS (nome,idade) VALUES (?,?);
             """
@@ -132,5 +134,21 @@ def deletar(id):
         print("Erro")
         return redirect(url_for('home'))
 
+
+
+@app.route("/buscaProfissao", methods=["GET"])
+def buscarProfissao():
+    #obtem apenas a descricao da profissao
+    query = "select descricao from PROFISSAO"
+    con = conectadb()
+    cur = con.cursor()
+    
+    try:
+        #obtem os dados e coloca na variavel dados
+        dados = cur.execute(query).fetchall()
+        return dados
+    except:
+        print("Erro ao buscar no banco")
+        return "erro"
 
 app.run(debug=True)

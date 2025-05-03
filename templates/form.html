@@ -4,6 +4,7 @@
 {% include 'head.html' %}
 
 <body>
+    {% include 'navbar.html' %}
     <div style="width: 100%;">
         <div style="margin: auto; width: 25%;">
             {% if dados %}
@@ -21,16 +22,14 @@
                         <legend>Novo User:</legend>
                             <input type="text" name="nome" id="nome" placeholder="Digite o nome do usuario">
                             <input type="number" name="idade" id="idade" placeholder="Digite a idade do usuario">
+                            <input type="text" name="prof" id="prof">
                         <input type="submit" id="btnEnviar" value="Enviar">
                     </fieldset>
                 </form>
             {% endif %}
         </div>
     </div>
-    <script>
-        
-       
-    </script>
+    <script src="/static/js/form.js"></script>
 </body>
 
 </html>
